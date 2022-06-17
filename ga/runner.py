@@ -3,7 +3,6 @@ import cv2
 
 import random
 from multiprocessing import Pool
-from itertools import repeat
 
 from ga.population import Population
 from ga.individ import Individual
@@ -122,14 +121,7 @@ class GA_Runner:
         self.best.extend(new_best)
 
     def add_fittest(self):
-        # class _wrapper:
-        #     def __init__(self, wrapped):
-        #         self.wrapped = wrapped
-
         self.best.extend(self.population.individuals)
-        # v_fitness = numpy.vectorize(
-        #     lambda x, track, start_coord: x.calculate_fitness(track.wrapped, start_coord.wrapped))
-        # v_fitness(x=self.best, track=_wrapper(self.track), start_coord=_wrapper(self.start_coord))
         with Pool(4) as pool:
             results = [pool.apply_async(ind.calculate_fitness,
                                         (self.track.copy(),
@@ -141,8 +133,8 @@ class GA_Runner:
                 self.best[i] = result.get()
 
         self.best.sort(key=lambda ind: ind.fitness, reverse=True)
-
         self.population.individuals = self.best[:len(self.population.individuals)]
+
 
     @staticmethod
     def _swap_genes(first, second, crossover_point):

@@ -111,7 +111,6 @@ def main():
     #                    [4.097, -0.055, -3.263],
     #                ])
     # # ga = GA_Runner(10, img, [1314, 750, 180])
-    # # keyboard.on_press_key("p", lambda x: ga.set_show())
     # ga.run()
 
 

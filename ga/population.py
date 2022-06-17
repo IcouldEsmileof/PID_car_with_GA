@@ -1,6 +1,5 @@
 import numpy
 from multiprocessing import Pool
-from itertools import repeat
 from ga.individ import Individual
 
 
@@ -19,13 +18,7 @@ class Population:
                 ind.genes = numpy.array(seed[i])
                 self.individuals.append(ind)
 
-    def call_me(self, ind: Individual, track, start_point):
-        return ind.calculate_fitness(track, start_point, to_show=True)
-
     def calculate_fitness(self):
-        # class _wrapper:
-        #     def __init__(self, wrapped):
-        #         self.wrapped = wrapped
         with Pool(4) as pool:
             results = [pool.apply_async(ind.calculate_fitness,
                                         (self.track.copy(),
@@ -36,12 +29,6 @@ class Population:
                        for ind in self.individuals]
             for i, result in enumerate(results):
                 self.individuals[i] = result.get()
-
-            # v_fitness = numpy.vectorize(
-            #     lambda x, track, start_coord: x.calculate_fitness(track.wrapped, start_coord.wrapped))
-            # v_fitness(x=self.individuals, track=_wrapper(self.track), start_coord=_wrapper(self.start_coord))
-            # for i in self.individuals:
-            #     i.calculate_fitness(self.track, self.start_coord)
 
     def get_best_ids(self):
         best_ids = [self.individuals.index(x) for x in

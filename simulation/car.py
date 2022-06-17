@@ -3,10 +3,8 @@ import numpy
 
 
 class Car:
-    _me = None
 
     def __init__(self, track: numpy.array, start_coord: numpy.array, to_record=False, file_name=None):
-        Car._me = self
         self.track = track
         self.x = start_coord[0]  # car center x
         self.y = start_coord[1]  # car center y
@@ -31,27 +29,6 @@ class Car:
             self.recorder.release()
 
     def get_image(self) -> numpy.array:
-        # result = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        #           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        #           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        #           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        #           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        #           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        #           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        #           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        #           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        #           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        #           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        #           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        #           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        #           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        #           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        #           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        #           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        #           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        #           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 0, 0],
-        #           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255, 255, 255, 255, 255]]
-        # return numpy.array(result, dtype=numpy.uint8)
         self.cx = self.x + (self.h // 2) * numpy.cos(numpy.deg2rad(self.rotation - 90))
         self.cy = self.y + (self.h // 2) * numpy.sin(numpy.deg2rad(self.rotation - 90))
 
@@ -118,34 +95,11 @@ class Car:
     def move(self, left, right):
         self.rotation += (left - right) // 100
         self.rotation = self.rotation if self.rotation < 360 else self.rotation - 360
-        if left >= 0 and right >= 0:
-            self.x = self.x + (((left + right) / 2) / 100) * numpy.cos(numpy.deg2rad(self.rotation - 90))
-            self.y = self.y + (((left + right) / 2) / 100) * numpy.sin(numpy.deg2rad(self.rotation - 90))
-        elif left <= 0 and right <= 0:
-            self.x = self.x + (((left + right) / 2) / 100) * numpy.cos(numpy.deg2rad(self.rotation - 90))
-            self.y = self.y + (((left + right) / 2) / 100) * numpy.sin(numpy.deg2rad(self.rotation - 90))
+        self.rotation = self.rotation if self.rotation > -360 else self.rotation + 360
+        self.x = self.x + (((left + right) / 2) / 100) * numpy.cos(numpy.deg2rad(self.rotation - 90))
+        self.y = self.y + (((left + right) / 2) / 100) * numpy.sin(numpy.deg2rad(self.rotation - 90))
+
 
     def is_on_track(self):
         return self.get_line_coverage() > 0.2
 
-    @classmethod
-    def forward(cls):
-        Car._me.x = Car._me.x + numpy.cos(numpy.deg2rad(Car._me.rotation - 90))
-        Car._me.y = Car._me.y + numpy.sin(numpy.deg2rad(Car._me.rotation - 90))
-
-    @classmethod
-    def backward(cls):
-        Car._me.x = Car._me.x - numpy.cos(numpy.deg2rad(Car._me.rotation - 90))
-        Car._me.y = Car._me.y - numpy.sin(numpy.deg2rad(Car._me.rotation - 90))
-
-    @classmethod
-    def left(cls):
-        Car._me.rotation = Car._me.rotation - 10
-
-    @classmethod
-    def right(cls):
-        Car._me.rotation = Car._me.rotation + 10
-
-    @classmethod
-    def stop(cls):
-        Car._me.to_show = False
