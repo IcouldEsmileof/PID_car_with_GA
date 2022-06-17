@@ -151,7 +151,7 @@ class GA_Runner:
         counter = {}
         for ind1 in self.population.individuals:
             for ind2 in self.population.individuals:
-                if all((ind2.genes - ind2.genes) <= 0.0001):
+                if all((ind1.genes - ind2.genes) <= 0.001):
                     if str(ind1.genes) in counter.keys():
                         counter[str(ind1.genes)] = counter[str(ind1.genes)] + 1
                     else:
