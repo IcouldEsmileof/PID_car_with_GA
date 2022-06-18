@@ -10,8 +10,108 @@ from ga.individ import Individual
 from ga.runner import GA_Runner
 
 
+def exp1(img):
+    ga = GA_Runner(10, img, [140, 650, 0])
+    ga.run()
+    return True
+
+
+def exp2(img):
+    ga = GA_Runner(20, img, [140, 650, 0])
+    ga.run()
+    return True
+
+
+def exp3(img):
+    ga = GA_Runner(20, img, [140, 650, 0],
+                   [
+                       [2.924, 0.626, 2.684],
+                       [6.098, 0.964, -3.263],
+                   ]
+                   )
+    ga.run()
+    return True
+
+
+def exp4(img):
+    ga = GA_Runner(10, img, [140, 650, 0],
+                   [
+                       [2.117, 0.598, 2.684],
+                       [2.924, 0.626, 2.684],
+                       [6.098, 0.964, -3.263],
+                       [6.098, -0.055, -3.263],
+                       [4.374, -0.055, -3.263],
+                       [4.097, -0.055, -3.263],
+                   ],
+                   order_changed=True
+                   )
+    ga.run()
+    return True
+
+
+def exp5(img):
+    ga = GA_Runner(10, img, [140, 650, 0], order_changed=True)
+    ga.run()
+    return True
+
+
+def show_best_of_exp1(img):
+    ind = Individual()
+    ind.genes = numpy.array([2.298, 0.023000000000000576, -0.662])
+    ind.calculate_fitness(track=img, start_coord=[140, 650, 0], to_show=True)
+    print(str(ind))
+    print("Criteria 1: " + str(ind.fitness.value1))
+    print("Criteria 2: " + str(ind.fitness.value2))
+    print("Criteria 3: " + str(ind.fitness.value3 / ind.fitness.value2))
+    return True
+
+
+def show_best_of_exp2(img):
+    ind = Individual()
+    ind.genes = numpy.array([6.098, 0.964, -3.263])
+    ind.calculate_fitness(track=img, start_coord=[140, 650, 0], to_show=True)
+    print(str(ind))
+    print("Criteria 1: " + str(ind.fitness.value1))
+    print("Criteria 2: " + str(ind.fitness.value2))
+    print("Criteria 3: " + str(ind.fitness.value3 / ind.fitness.value2))
+    return True
+
+
+def show_best_of_exp3(img):
+    ind = Individual()
+    ind.genes = numpy.array([4.097, -0.055, -3.263])
+    ind.calculate_fitness(track=img, start_coord=[140, 650, 0], to_show=True)
+    print(str(ind))
+    print("Criteria 1: " + str(ind.fitness.value1))
+    print("Criteria 2: " + str(ind.fitness.value2))
+    print("Criteria 3: " + str(ind.fitness.value3 / ind.fitness.value2))
+    return True
+
+
+def show_best_of_exp4(img):
+    ind = Individual(order_changed=True)
+    ind.genes = numpy.array([1.016, 0.016, 1.19725])
+    ind.calculate_fitness(track=img, start_coord=[140, 650, 0], to_show=True)
+    print(str(ind))
+    print("Criteria 1: " + str(ind.fitness.value1))
+    print("Criteria 2: " + str(ind.fitness.value3 / ind.fitness.value2))
+    print("Criteria 3: " + str(ind.fitness.value2))
+    return True
+
+
+def show_best_of_exp5(img):
+    ind = Individual(order_changed=True)
+    ind.genes = numpy.array([9.485, 9.869, -7.637])
+    ind.calculate_fitness(track=img, start_coord=[140, 650, 0], to_show=True)
+    print(str(ind))
+    print("Criteria 1: " + str(ind.fitness.value1))
+    print("Criteria 2: " + str(ind.fitness.value3 / ind.fitness.value2))
+    print("Criteria 3: " + str(ind.fitness.value2))
+    return True
+
+
 def main():
-    img = cv.imread("ga_track_test.png")[:, :, 0]
+    img = cv.imread("ga_track.png")[:, :, 0]
 
     A = {"x": 240, "y": 715}
     B = {"x": 240, "y": 300}
@@ -46,72 +146,24 @@ def main():
     img[C["y"]:A["y"], O["x"]:J["x"]][img[C["y"]:A["y"], O["x"]:J["x"]] > 0] = 14 * 16 - 1  # section 14
     img[N["y"]:, O["x"]:N["x"]][img[N["y"]:, O["x"]:N["x"]] > 0] = 15 * 16 - 1  # section 15
     img[O["y"]:, 0:O["x"]][img[O["y"]:, 0:O["x"]] > 0] = 16 * 16 - 1  # section 16
-    # cv.rectangle(img,(N["x"]-5,N["y"]-5),(N["x"]+5,N["y"]+5), (255,0,0),-1)
-    # cv.imshow("asd", img)
-    # cv.waitKey()
-    # return
-    # with open("test.txt", "w") as f:
-    #     for i in range(img.shape[0]):
-    #         for j in range(img.shape[1]):
-    #             if img[i, j] > 0:
-    #                 f.write("255 ")
-    #             else:
-    #                 f.write("000 ")
-    #         f.write("\n")
-    #
-    # exit()
 
-    # car = Car(track=img, start_coord=[1314, 750, 180])
-    # car.rotation = 180
-    # pixy = Pixy(car)
-    # while car.to_show:
-    #     ((x1, y1), (x2, y2)) = pixy.get_direcetion()
-    #     print(x1, y1, x2, y2)
-    #     error = numpy.rad2deg(numpy.arctan2(y2 - (car.ch - 1) / 2, (car.cw - 1) - x2))
-    #     print(error)
-    #     print(car.x, car.y)
-    #     car.show()
-    #     cv.waitKey()
-    ind = Individual()
-    ind.genes = numpy.array([1.016, 0.016, 1.19725])
-    ind.calculate_fitness(track=img, start_coord=[140, 650, 0], to_show=True, to_record=True,
-                          file_name="Children_child_changed_criteria_2.avi")
-    ind.reset()
-    ind.genes = numpy.array([3.2455, 0.2715, -0.2895])
-    ind.calculate_fitness(track=img, start_coord=[140, 650, 0], to_show=True, to_record=True,
-                          file_name="Children_child_changed_criteria_1.avi")
-    ind.reset()
-    ind.genes = numpy.array([4.374, -0.055, -3.263])
-    ind.calculate_fitness(track=img, start_coord=[140, 650, 0], to_show=True, to_record=True,
-                          file_name="Children_child_1.avi")
-    ind.reset()
-    ind.genes = numpy.array([6.098, -0.055, -3.263])
-    ind.calculate_fitness(track=img, start_coord=[140, 650, 0], to_show=True, to_record=True,
-                          file_name="Child_2.avi")
-    ind.reset()
-    ind.genes = numpy.array([2.924, 0.626, 2.684])
-    ind.calculate_fitness(track=img, start_coord=[140, 650, 0], to_show=True, to_record=True,
-                          file_name="Child_1.avi")
-    ind.reset()
-    ind.genes = numpy.array([6.098, 0.964, -3.263])
-    ind.calculate_fitness(track=img, start_coord=[140, 650, 0], to_show=True, to_record=True,
-                          file_name="Original_2.avi")
-    ind.reset()
-    ind.genes = numpy.array([2.117, 0.598, 2.684])
-    ind.calculate_fitness(track=img, start_coord=[140, 650, 0], to_show=True, to_record=True,
-                          file_name="Original_1.avi")
-    print(str(ind.fitness))
-    # ga = GA_Runner(10, img, [140, 650, 0],
-    #                [
-    #                    [2.117, 0.598, 2.684],
-    #                    [2.924, 0.626, 2.684],
-    #                    [6.098, 0.964, -3.263],
-    #                    [6.098, -0.055, -3.263],
-    #                    [4.374, -0.055, -3.263],
-    #                    [4.097, -0.055, -3.263],
-    #                ])
-    # # ga = GA_Runner(10, img, [1314, 750, 180])
-    # ga.run()
+    l = False
+    # l = exp1(img)
+    # l = exp2(img)
+    # l = exp3(img)
+    # l = exp4(img)
+    # l = exp5(img)
+    # l = show_best_of_exp1(img)
+    # l = show_best_of_exp2(img)
+    # l = show_best_of_exp3(img)
+    # l = show_best_of_exp4(img)
+    # l = show_best_of_exp5(img)
+    if not l:
+        print(
+            "My developer is lazy so he didn't make me a menu. \n"
+            "Please open main.py and uncomment the line you want to run (remove the '#' symbol).\n"
+            "Thank you!"
+        )
 
 
 if __name__ == "__main__":

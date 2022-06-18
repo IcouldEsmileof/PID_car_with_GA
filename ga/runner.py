@@ -9,10 +9,10 @@ from ga.individ import Individual
 
 
 class GA_Runner:
-    def __init__(self, population_count: int, track, start_coord, seed=None):
-        self.population = Population(population_count, 5, track, start_coord, seed)
+    def __init__(self, population_count: int, track, start_coord, seed=None, order_changed=False):
+        self.population = Population(population_count, 5, track, start_coord, seed, order_changed)
         self.best = []
-        self.max_fitness = None  # TODO
+        self.order_changed = order_changed
         self.track = track
         self.start_coord = start_coord
         self.to_show = False
@@ -96,9 +96,9 @@ class GA_Runner:
         for ind1_i in range(len(self.best)):
             for ind2_i in range(ind1_i + 1, len(self.best)):
                 crossover_index = numpy.random.randint(self.population.genes_count)
-                ind_1 = Individual()
+                ind_1 = Individual(self.order_changed)
                 ind_1.genes = self.best[ind1_i].genes.copy()
-                ind_2 = Individual()
+                ind_2 = Individual(self.order_changed)
                 ind_2.genes = self.best[ind2_i].genes.copy()
                 ind_3 = self.get_average_ind(ind_1, ind_2)
                 self._swap_genes(ind_1, ind_2, crossover_index)
@@ -162,7 +162,7 @@ class GA_Runner:
         return False
 
     def get_average_ind(self, ind_1: Individual, ind_2: Individual):
-        new_ind = Individual()
+        new_ind = Individual(self.order_changed)
         new_ind.genes = numpy.array([(ind_1.genes[0] + ind_2.genes[0]) / 2,
                                      (ind_1.genes[1] + ind_2.genes[1]) / 2,
                                      (ind_1.genes[2] + ind_2.genes[2]) / 2])

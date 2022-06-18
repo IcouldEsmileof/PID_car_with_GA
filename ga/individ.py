@@ -10,17 +10,32 @@ import gc
 
 @total_ordering
 class Fitness:
-    def __init__(self):
+    def __init__(self, order_changed=False):
         self.value1 = 0  # max section reached
         self.value2 = 1  # steps taken
         self.value3 = 0  # sum coverage
+        self.order = self._order1
+        if order_changed:
+            self.order = self._order2
 
     def __eq__(self, other):
         if other is None or not isinstance(other, Fitness):
             raise Exception("Invalid cmp with object" + str(other))
-        return self.value1 == other.value1 and self.value2 == other.value2
+        return self.value1 == other.value1 and self.value2 == other.value2 and abs(self.value3 - other.value3) < 0.0001
 
     def __lt__(self, other):
+        return self.order(other)
+
+    def _order1(self, other):
+        if other is None or not isinstance(other, Fitness):
+            raise Exception("Invalid cmp with object" + str(other))
+        if self.value1 == other.value1:
+            if self.value2 == other.value2:
+                return (self.value3 / self.value2) < (other.value3 / other.value2)
+            return self.value2 > other.value2
+        return self.value1 < other.value1
+
+    def _order2(self, other):
         if other is None or not isinstance(other, Fitness):
             raise Exception("Invalid cmp with object" + str(other))
         if self.value1 == other.value1:
@@ -41,10 +56,10 @@ class Fitness:
 class Individual:
     g_id = 0
 
-    def __init__(self):
+    def __init__(self, order_changed=False):
         self.genes = numpy.array(
             [round(random.uniform(-10, 10), 3), round(random.uniform(-10, 10), 3), round(random.uniform(-10, 10), 3)])
-        self.fitness = Fitness()
+        self.fitness = Fitness(order_changed)
         self.m_id = Individual.g_id
         Individual.g_id += 1
         self.did_fitness = False
@@ -114,7 +129,6 @@ class Individual:
                 break
             elif self.fitness.value1 < new_value1:
                 self.fitness.value1 = max(new_value1, self.fitness.value1)
-
 
             self.fitness.value2 += 1
             self.fitness.value3 += car.get_line_coverage()

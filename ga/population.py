@@ -4,17 +4,17 @@ from ga.individ import Individual
 
 
 class Population:
-    def __init__(self, population_size, crossover_count, track, start_coord, seed=None):
+    def __init__(self, population_size, crossover_count, track, start_coord, seed=None, order_changed=False):
         self.individuals = []
         self.crossover_count = crossover_count
         self.genes_count = 3
         self.track = track
         self.start_coord = start_coord
         for i in range(population_size):
-            self.individuals.append(Individual())
+            self.individuals.append(Individual(order_changed))
         if seed:
             for i in range(min(len(seed), population_size)):
-                ind = Individual()
+                ind = Individual(order_changed)
                 ind.genes = numpy.array(seed[i])
                 self.individuals.append(ind)
 
